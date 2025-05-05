@@ -1,0 +1,9 @@
+table tr:hover {
+  background-color: #f1f1f1;
+}
+::ng-deep .ql-editor {
+  max-height: 250px; 
+  overflow-y: auto;
+}
+
+
