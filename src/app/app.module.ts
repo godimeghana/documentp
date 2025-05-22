@@ -6,7 +6,7 @@ import { EditorModule } from './editor/editor.module';
 import { CommonModule } from '@angular/common';
 import { NgToastModule } from 'ng-angular-popup';
 import {QuillModule} from 'ngx-quill';
-import { HttpClientModule } from '@angular/common/http';
+// import { HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 @NgModule({
   declarations: [
@@ -19,7 +19,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     CommonModule,
     QuillModule.forRoot(),
     NgToastModule,
-    HttpClientModule,
+    // HttpClientModule,
     MatSnackBarModule
   ],
   providers: [],

@@ -6,6 +6,7 @@ import { PLATFORM_ID, Inject } from '@angular/core';
 import { QuillModule } from 'ngx-quill';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+// import { ApiService } from '../services/api.service';
 
 declare var bootstrap: any;
 
@@ -19,7 +20,7 @@ declare var bootstrap: any;
 export class EditorComponent implements OnInit {
   saveddocuments: { name: string; content: string; created_at: string }[] = [];
   selectedDocument: { name: string; content: string; created_at: string } | null = null;
-
+  document: any[] = [];
   documentName: string = '';
   editorContent: string = '';
   created_at: string = '';
@@ -38,16 +39,29 @@ export class EditorComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    // private apiService: ApiService
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.loadDocuments();
+    // this.apiService.getDocuments().subscribe({
+    //   next: (data) => this.document = data,
+    //   error: (err) => console.error('API Error:', err)
+    // });
+  }
+
+  createNewDocument() {
+    const payload = { title: 'New Doc', content: 'Hello Flask!' };
+    // this.apiService.createDocument(payload).subscribe({
+    //   next: (res) => console.log('Created:', res),
+    //   error: (err) => console.error('Error:', err)
+    // });
   }
 
   loadDocuments() {
-    this.http.get<{ name: string; content: string; created_at: string }[]>('http://localhost:5000/api/document')
+    this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
       .subscribe((docs) => {
         this.saveddocuments = docs;
       });
@@ -71,7 +85,7 @@ export class EditorComponent implements OnInit {
     if (name && content) {
       const payload = { name, content };
 
-      this.http.post('http://localhost:5000/api/document', payload).subscribe({
+      this.http.post('https://backendapp-2-5nc3.onrender.com/api/document', payload).subscribe({
         next: () => {
           this.loadDocuments();
           this.clearForm();
@@ -100,7 +114,7 @@ export class EditorComponent implements OnInit {
   deleteDocument(doc: any, event: MouseEvent) {
     event.stopPropagation();
     if (confirm(`Are you sure you want to delete "${doc.name}"?`)) {
-      this.http.delete<{ message: string }>(`http://localhost:5000/api/document/${doc.name}`).subscribe({
+      this.http.delete<{ message: string }>(`https://backendapp-2-5nc3.onrender.com/api/document/${doc.name}`).subscribe({
         next: (res) => {
           alert(res.message);
           this.saveddocuments = this.saveddocuments.filter((d) => d.name !== doc.name);
@@ -132,7 +146,7 @@ export class EditorComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.http.delete<{ message: string }>(`http://localhost:5000/api/document/${this.documentodelete.name}`)
+    this.http.delete<{ message: string }>(`https://backendapp-2-5nc3.onrender.com/api/document/${this.documentodelete.name}`)
       .subscribe({
         next: (res) => {
           alert(res.message);
