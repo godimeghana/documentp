@@ -10,6 +10,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 declare var bootstrap: any;
 
+
 @Component({
   selector: 'app-editor',
   standalone: true,
@@ -27,6 +28,9 @@ export class EditorComponent implements OnInit {
   isBrowser = false;
   documentodelete: any;
   modalInstance: any;
+  isLoading: boolean = false;
+  isSaving: boolean = false;
+  isDeleting: boolean = false;
 
   modules = {
     toolbar: [
@@ -60,12 +64,21 @@ export class EditorComponent implements OnInit {
     // });
   }
 
-  loadDocuments() {
-    this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
-      .subscribe((docs) => {
+loadDocuments() {
+  this.isLoading = true;
+  this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
+    .subscribe({
+      next: (docs) => {
         this.saveddocuments = docs;
-      });
-  }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading documents:', err);
+        this.isLoading = false;
+      }
+    });
+}
+
 
   selectDocument(doc: { name: string; content: string; created_at: string }) {
     this.selectedDocument = { ...doc };
@@ -84,7 +97,7 @@ export class EditorComponent implements OnInit {
 
     if (name && content) {
       const payload = { name, content };
-
+      this.isSaving = true;
       this.http.post('https://backendapp-2-5nc3.onrender.com/api/document', payload).subscribe({
         next: () => {
           this.loadDocuments();
@@ -100,6 +113,7 @@ export class EditorComponent implements OnInit {
         },
         error: (err) => {
           console.error('Error saving document:', err);
+          this.isSaving = false;
         }
       });
     }
@@ -146,6 +160,7 @@ export class EditorComponent implements OnInit {
   }
 
   confirmDelete() {
+    this.isDeleting = true;
     this.http.delete<{ message: string }>(`https://backendapp-2-5nc3.onrender.com/api/document/${this.documentodelete.name}`)
       .subscribe({
         next: (res) => {
@@ -158,6 +173,7 @@ export class EditorComponent implements OnInit {
           if (this.modalInstance) {
             this.modalInstance.hide();
           }
+          this.isDeleting = false;
         },
         error: (err) => {
           console.error('Error deleting document:', err);
@@ -165,6 +181,7 @@ export class EditorComponent implements OnInit {
           if (this.modalInstance) {
             this.modalInstance.hide();
           }
+          this.isDeleting = false;
         }
       });
   }
