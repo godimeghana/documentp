@@ -19,9 +19,8 @@ declare var bootstrap: any;
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  saveddocuments: { name: string; content: string; created_at: string | Date}[] = [];
-  selectedDocument: { name: string; content: string; created_at: string | Date 
-  } | null = null;
+  saveddocuments: { name: string; content: string; created_at: string }[] = [];
+  selectedDocument: { name: string; content: string; created_at: string } | null = null;
   document: any[] = [];
   documentName: string = '';
   editorContent: string = '';
@@ -44,8 +43,7 @@ export class EditorComponent implements OnInit {
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
-    private snackBar: MatSnackBar,
-    
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -61,23 +59,18 @@ export class EditorComponent implements OnInit {
 
 loadDocuments() {
   this.isLoading = true;
-  this.http.get<{ name: string; content: string; created_at: string | Date}[]>(
-    'https://backendapp-2-5nc3.onrender.com/api/document'
-  ).subscribe({
-    next: (docs) => {
-      this.saveddocuments = docs.map(doc => ({
-        ...doc,
-        created_at: new Date(doc.created_at)  // Convert to Date object to apply local time zone
-      }));
-      this.isLoading = false;
-    },
-    error: (err) => {
-      console.error('Error loading documents:', err);
-      this.isLoading = false;
-    }
-  });
+  this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
+    .subscribe({
+      next: (docs) => {
+        this.saveddocuments = docs;
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error loading documents:', err);
+        this.isLoading = false;
+      }
+    });
 }
-
 
 
   selectDocument(doc: { name: string; content: string; created_at: string }) {
