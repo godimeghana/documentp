@@ -17,7 +17,7 @@
             style="cursor: pointer"
           >
           <td class="border-t px-4 py-2">{{ doc.name }}</td>
-          <td class="border-t px-4 py-2">{{ doc.created_at | date: 'dd/MM/yyyy, h:mm a' }}</td>
+          <td class="border-t px-4 py-2">{{ doc.created_at | date: 'dd/MM/yyyy, h:mm a':'':'Asia/Kolkata' }}</td>
           <td class="border-t px-4 py-2">
               <button
                 type="button"
