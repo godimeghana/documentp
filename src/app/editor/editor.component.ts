@@ -20,7 +20,8 @@ declare var bootstrap: any;
 })
 export class EditorComponent implements OnInit {
   saveddocuments: { name: string; content: string; created_at: string | Date}[] = [];
-  selectedDocument: { name: string; content: string; created_at: string } | null = null;
+  selectedDocument: { name: string; content: string; created_at: string | Date 
+  } | null = null;
   document: any[] = [];
   documentName: string = '';
   editorContent: string = '';
