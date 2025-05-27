@@ -59,6 +59,7 @@ export class EditorComponent implements OnInit {
 
 loadDocuments() {
   this.isLoading = true;
+
   this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
     .subscribe({
       next: (docs) => {
