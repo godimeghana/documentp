@@ -6,7 +6,7 @@ import { PLATFORM_ID, Inject } from '@angular/core';
 import { QuillModule } from 'ngx-quill';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
-// import { ApiService } from '../services/api.service';
+
 
 declare var bootstrap: any;
 
@@ -19,7 +19,7 @@ declare var bootstrap: any;
   styleUrls: ['./editor.component.css']
 })
 export class EditorComponent implements OnInit {
-  saveddocuments: { name: string; content: string; created_at: string }[] = [];
+  saveddocuments: { name: string; content: string; created_at: string | Date}[] = [];
   selectedDocument: { name: string; content: string; created_at: string } | null = null;
   document: any[] = [];
   documentName: string = '';
@@ -44,40 +44,39 @@ export class EditorComponent implements OnInit {
     @Inject(PLATFORM_ID) private platformId: Object,
     private http: HttpClient,
     private snackBar: MatSnackBar,
-    // private apiService: ApiService
+    
   ) {}
 
   ngOnInit(): void {
     this.isBrowser = isPlatformBrowser(this.platformId);
     this.loadDocuments();
-    // this.apiService.getDocuments().subscribe({
-    //   next: (data) => this.document = data,
-    //   error: (err) => console.error('API Error:', err)
-    // });
+    
   }
 
   createNewDocument() {
     const payload = { title: 'New Doc', content: 'Hello Flask!' };
-    // this.apiService.createDocument(payload).subscribe({
-    //   next: (res) => console.log('Created:', res),
-    //   error: (err) => console.error('Error:', err)
-    // });
+    
   }
 
 loadDocuments() {
   this.isLoading = true;
-  this.http.get<{ name: string; content: string; created_at: string }[]>('https://backendapp-2-5nc3.onrender.com/api/document')
-    .subscribe({
-      next: (docs) => {
-        this.saveddocuments = docs;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading documents:', err);
-        this.isLoading = false;
-      }
-    });
+  this.http.get<{ name: string; content: string; created_at: string | Date}[]>(
+    'https://backendapp-2-5nc3.onrender.com/api/document'
+  ).subscribe({
+    next: (docs) => {
+      this.saveddocuments = docs.map(doc => ({
+        ...doc,
+        created_at: new Date(doc.created_at)  // Convert to Date object to apply local time zone
+      }));
+      this.isLoading = false;
+    },
+    error: (err) => {
+      console.error('Error loading documents:', err);
+      this.isLoading = false;
+    }
+  });
 }
+
 
 
   selectDocument(doc: { name: string; content: string; created_at: string }) {
