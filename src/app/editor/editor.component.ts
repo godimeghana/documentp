@@ -98,8 +98,10 @@ loadDocuments() {
     if (name && content) {
       const payload = { name, content };
       this.isSaving = true;
+
       this.http.post('https://backendapp-2-5nc3.onrender.com/api/document', payload).subscribe({
         next: () => {
+
           this.loadDocuments();
           this.clearForm();
           form.resetForm();
@@ -110,6 +112,7 @@ loadDocuments() {
             horizontalPosition:'right',
 
           });
+          this.isSaving=false;
         },
         error: (err) => {
           console.error('Error saving document:', err);
