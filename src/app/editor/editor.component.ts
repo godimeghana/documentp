@@ -101,9 +101,11 @@ loadDocuments() {
           form.resetForm();
 
           
-          this.snackBar.open('Document saved successfully', 'Close', {
+          this.snackBar.open('✔️ Document saved successfully', 'Close', {
             duration: 3000,
             horizontalPosition:'right',
+            verticalPosition: 'bottom',
+            panelClass: ['custom-snackbar-singlebox']
 
           });
           this.isSaving=false;
